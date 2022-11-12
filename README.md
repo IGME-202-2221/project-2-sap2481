@@ -1,4 +1,4 @@
-# Project _NAME_
+# Project: Prometheus Simulator
 
 [Markdown Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet)
 
@@ -6,86 +6,109 @@ _REPLACE OR REMOVE EVERYTING BETWEEN "\_"_
 
 ### Student Info
 
--   Name: _YOUR NAME_
--   Section: _##_
+-   Name: Sam Peterson
+-   Section: 05
 
 ## Simulation Design
 
-_A brief explanation of your simulation._
+In this simulation, two agents, Man and Gods, interact with each other in the world. Man is scared of the Gods, and the Gods wish to antagonize Man. Using the Mouse, the player can drop fire into the world, causing a reaction from both Man and Gods. The Gods will attempt to snuff out the flame, while Man will attempt to acquire it and bring it back to their villages. Once a Man has a flame, the others will attempt to protect him by flocking around him, while the Gods will attempt to stop the Man who has the flame from returning it to the Village. If it is returned or smothered, both agents revert to their original states.
 
 ### Controls
 
--   _List all of the actions the player can have in your simulation_
-    -   _Include how to preform each action ( keyboard, mouse, UI Input )_
-    -   _Include what impact an action has in the simulation ( if is could be unclear )_
+- Move the Camera about the world (Arrow Keys)
+- Place Fire (Left Mouse Button)
 
-## _Agent 1 Name_
+## MAN
 
-_A brief explanation of this agent._
+Primitive mankind attempting to acquire and use fire from Prometheus.
 
-### _State 1 Name_
+### Evade
 
-**Objective:** _A brief explanation of this state's objective._
-
-#### Steering Behaviors
-
-- _List all behaviors used by this state_
-   - _If behavior has input data list it here_
-   - _eg, Flee - nearest Agent2_
-- Obstacles - _List all obstacle types this state avoids_
-- Seperation - _List all agents this state seperates from_
-   
-#### State Transistions
-
-- _List all the ways this agent can transition to this state_
-   - _eg, When this agent gets within range of Agent2_
-   - _eg, When this agent has reached target of State2_
-   
-### _State 2 Name_
-
-**Objective:** _A brief explanation of this state's objective._
+**Objective:** Avoid the Gods.
 
 #### Steering Behaviors
 
-- _List all behaviors used by this state_
-- Obstacles - _List all obstacle types this state avoids_
-- Seperation - _List all agents this state seperates from_
+- Evade - Nearest God
+- Obstacles - Will avoid rocks, trees, and other obstacles in the world
+- Seperation - Will Separate from all other instances of Man
    
 #### State Transistions
 
-- _List all the ways this agent can transition to this state_
+- This state will activate once all Fire in the world has been captured or smothered.
+   
+### Search
 
-## _Agent 2 Name_
-
-_A brief explanation of this agent._
-
-### _State 1 Name_
-
-**Objective:** _A brief explanation of this state's objective._
+**Objective:** Man will search for Fire placed by the player.
 
 #### Steering Behaviors
 
-- _List all behaviors used by this state_
-- Obstacles - _List all obstacle types this state avoids_
-- Seperation - _List all agents this state seperates from_
+- Seek - Nearest Flame
+- Obstacles - Will avoid rocks, trees, and other obstacles in the world
+- Seperation - Will Separate from all other instances of Man
    
 #### State Transistions
 
-- _List all the ways this agent can transition to this state_
-   
-### _State 2 Name_
+- Agents will transition to this state when Fire is placed by the player in the world.
 
-**Objective:** _A brief explanation of this state's objective._
+### Protect
+
+**Objective:** Man will protect another Man with a flame by flocking around him.
 
 #### Steering Behaviors
 
-- _List all behaviors used by this state_
-- Obstacles - _List all obstacle types this state avoids_
-- Seperation - _List all agents this state seperates from_
+- Flock: Nearest Man with Flame
+- Obstacles - Will avoid rocks, trees, and other obstacles in the world
+- Seperation - Will Separate from all other instances of Man
+
+#### State Transitions
+
+- Man will transition to this State when there is no more fire in the world, but a Man is carrying one
+
+## GODS
+
+The Gods of Olympus attempting to stop the secret of Fire from reaching mankind.
+
+### FLOCK
+
+**Objective:** The Gods will flock together when no flames are in the world.
+
+#### Steering Behaviors
+
+- Flock - Nearest God
+- Obstacles - Will avoid rocks, trees, and other obstacles in the world
+- Seperation - Will Separate from all other instances of Gods
    
 #### State Transistions
 
-- _List all the ways this agent can transition to this state_
+- This State can be reached when no fires are in the world.
+   
+### SEEK
+
+**Objective:** Gods will seek out Flames placed by the Player.
+
+#### Steering Behaviors
+
+- Seek - Nearest Flame
+- Obstacles - Will avoid rocks, trees, and other obstacles in the world
+- Seperation - Will Separate from all other instances of Gods
+
+#### State Transistions
+
+- Gods reach this state when a flame is placed into the world by the Player
+
+### CHASE
+
+**Objective:** Gods will chase Man that carry flames.
+
+#### Steering Behaviors
+
+- Seek - Nearest Man with Flame
+- Obstacles - Will avoid rocks, trees, and other obstacles in the world
+- Seperation - Will Separate from all other instances of Gods
+
+#### State Transitions
+
+- Gods will reach this state when no flames are in the world, but a Man is carrying a flame.
 
 ## Sources
 
