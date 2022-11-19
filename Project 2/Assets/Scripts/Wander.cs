@@ -39,5 +39,7 @@ public class Wander : Agent
         totalSteeringForce += boundsForce * boundsWeight;
 
         totalSteeringForce += Separation();
+
+        totalSteeringForce += AvoidObstacle();
     }
 }

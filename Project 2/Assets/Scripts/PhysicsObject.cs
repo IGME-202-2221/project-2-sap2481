@@ -9,6 +9,8 @@ public class PhysicsObject : MonoBehaviour
     Vector3 acceleration = Vector3.zero;            //Forces sum
     Vector3 position = Vector3.negativeInfinity;    //Where is it?
 
+    public float radius = 1f;
+
     public Vector3 Direction
     {
         get { return direction; }
@@ -25,6 +27,11 @@ public class PhysicsObject : MonoBehaviour
     public Vector3 Position
     {
         get { return position; }
+    }
+
+    public Vector3 Right
+    {
+        get { return transform.right; }
     }
 
     [SerializeField]
@@ -93,6 +100,9 @@ public class PhysicsObject : MonoBehaviour
         {
             velocity.y *= -1;
         }
+
+        //Rotate
+        transform.rotation = Quaternion.LookRotation(Vector3.back, velocity);
     }
 
     public void ApplyForce(Vector3 force)
@@ -113,7 +123,4 @@ public class PhysicsObject : MonoBehaviour
         friction = friction * coefficientOfFriction;
         ApplyForce(friction);
     }
-
-    //To achieve bouncing, look at screen-wrapping code from vehicle, and instead of changing position, inverse the x & y components of velocity depending on the boundary it's hitting
-    //(That means multiply that component by -1)
 }

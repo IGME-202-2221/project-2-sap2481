@@ -17,13 +17,7 @@ public class AgentManager : MonoBehaviour
         get { return agents; }
     }
 
-    int itAgentIndex;
-    public int ItAgentIndex
-    {
-        get { return itAgentIndex; }
-    }
-
-    public List<Sprite> sprites = new List<Sprite>();
+    public List<Obstacle> obstacles = new List<Obstacle>();
     
     // Start is called before the first frame update
     void Start()
@@ -33,21 +27,7 @@ public class AgentManager : MonoBehaviour
             agents.Add(Instantiate(agentPrefab));
 
             agents[i].Init(this);
-
-            //((TagPlayer)agents[i]).ChangeStateTo(TagStates.NotIt);
         }
-
-        if (agents.Count > 0)
-        {
-            TagPlayer(0);
-        }
-    }
-
-    public void TagPlayer(int itPlayerIndex)
-    {
-        itAgentIndex = itPlayerIndex;
-
-        //((TagPlayer)agents[0]).ChangeStateTo(TagStates.It);
     }
 
     // Update is called once per frame
