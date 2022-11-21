@@ -120,12 +120,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   physicsObject: {fileID: 2608520356793616209}
   maxSpeed: 2
-  avoidFutureTime: 5
-  avoidRadius: 1
+  avoidFutureTime: 2
+  avoidRadius: 2
   maxForce: 2
   useVelocity: 1
   futureTime: 3
   wanderRadius: 3
   worldSize: {x: 0, y: 0}
-  boundsTimeCheck: 2
+  boundsTimeCheck: 1
   boundsWeight: 2

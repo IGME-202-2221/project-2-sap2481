@@ -196,9 +196,10 @@ public abstract class Agent : MonoBehaviour
 
         //Loop through all obstacles to find any in my way
         foreach(Obstacle obstacle in manager.obstacles)
-        {
+        {   
             VToO = obstacle.Position - physicsObject.Position;
             forwardDot = Vector3.Dot(VToO, physicsObject.Velocity.normalized);
+            float weight = avoidFutureTime / (forwardDot + 0.1f);
 
             //Check if it's in front of me
             if (forwardDot >= 0 && (forwardDot * forwardDot) <= futureSqrDist) //And not too far and front of me
@@ -211,12 +212,12 @@ public abstract class Agent : MonoBehaviour
                     if (rightDot < 0)
                     {
                         //Turn Right
-                        avoidForce += transform.right * maxSpeed * (1f / forwardDot); //- This causes a runtime error (causes Input Position to become {NaN, NaN, NaN} in physicsObject)
+                        avoidForce += transform.right * maxSpeed * weight;
                     }
                     else
                     {
                         //Turn Left
-                        avoidForce += -transform.right * maxSpeed * (1f / forwardDot); //- This causes a runtime error. (causes Input Position to become {NaN, NaN, NaN} in physicsObject)
+                        avoidForce += -transform.right * maxSpeed * weight;
                     }
                 }
             }
