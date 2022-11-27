@@ -5,7 +5,10 @@ using UnityEngine;
 public class AgentManager : MonoBehaviour
 {
     [SerializeField]
-    Agent agentPrefab;
+    Agent godPrefab;
+
+    [SerializeField]
+    Agent manPrefab;
 
     [SerializeField]
     int agentSpawnCount;
@@ -24,8 +27,14 @@ public class AgentManager : MonoBehaviour
     {
         for (int i = 0; i < agentSpawnCount; i++)
         {
-            agents.Add(Instantiate(agentPrefab));
-
+            if (i % 2 == 0)
+            {
+                agents.Add(Instantiate(manPrefab, new Vector3(-5, -3, 0), Quaternion.identity));               
+            }
+            else
+            {
+                agents.Add(Instantiate(godPrefab, new Vector3(5, 3, 0), Quaternion.identity));
+            }
             agents[i].Init(this);
         }
     }
