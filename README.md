@@ -112,8 +112,7 @@ The Gods of Olympus attempting to stop the secret of Fire from reaching mankind.
 
 ## Sources
 
--   _List all project sources here –models, textures, sound clips, assets, etc._
--   _If an asset is from the Unity store, include a link to the page and the author’s name_
+-   Background Soil: https://www.freepik.com/free-vector/brown-soil-texture-background_3478044.htm#query=soil&position=0&from_view=keyword
 
 ## Make it Your Own
 
