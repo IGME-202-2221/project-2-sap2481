@@ -116,9 +116,7 @@ The Gods of Olympus attempting to stop the secret of Fire from reaching mankind.
 
 ## Make it Your Own
 
-- _List out what you added to your game to make it different for you_
-- _If you will add more agents or states make sure to list here and add it to the documention above_
-- _If you will add your own assets make sure to list it here and add it to the Sources section
+- My game is different for me in the player interaction aspect, in the placement of the fire and the subsequent reaction from both sides in a different manner: Man trying to claim the fire, and Gods trying to snuff it out.
 
 ## Known Issues
 
