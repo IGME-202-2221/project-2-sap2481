@@ -127,5 +127,5 @@ MonoBehaviour:
   futureTime: 2
   wanderRadius: 2
   worldSize: {x: 0, y: 0}
-  boundsTimeCheck: 0
+  boundsTimeCheck: 1
   boundsWeight: 1

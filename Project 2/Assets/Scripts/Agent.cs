@@ -27,6 +27,8 @@ public abstract class Agent : MonoBehaviour
     [SerializeField]
     bool useVelocity = true;
 
+    List<Fire> fireList = new List<Fire>();
+
     protected Vector3 totalSteeringForce;
 
     // Start is called before the first frame update
@@ -128,60 +130,6 @@ public abstract class Agent : MonoBehaviour
         return separateForce;
     }
 
-    /*protected void AvoidObstacle(Obstacle obstacle)
-    {
-        //Get a vector from this agent to the obstacle
-        Vector3 toObstacle = obstacle.Position - physicsObject.Position;
-
-        //Check if obstacle is behind agent
-        float fwdToObstacleDot = Vector3.Dot(physicsObject.Direction, toObstacle);
-        if (fwdToObstacleDot < 0)
-        {
-            return;
-        }
-
-        //Check if obstacle is too far to the left or right
-        float rightToObstacleDot = Vector3.Dot(physicsObject.Right, toObstacle);
-        if (Mathf.Abs(rightToObstacleDot) > physicsObject.radius + obstacle.Radius)
-        {
-            return;
-        }
-
-        //Check if obstacle is within vision range
-        if (fwdToObstacleDot > avoidFutureTime)
-        {
-            return;
-        }
-
-        //Avoid the Obstacle
-        Vector3 desiredVelocity;
-        if (rightToObstacleDot > 0)
-        {
-            //If the obstacle is on the right, steer left
-            desiredVelocity = physicsObject.Right * -maxSpeed;
-        }
-        else
-        {
-            //If the obstacle is on the left, steer right
-            desiredVelocity = physicsObject.Right * maxSpeed;
-        }
-
-        //Create a weight based on how close we are to the obstacle
-        float weight = avoidFutureTime / (fwdToObstacleDot * 0.1f);
-
-        Vector3 steeringForce = (desiredVelocity - physicsObject.Velocity) * weight;
-
-        totalSteeringForce += steeringForce;
-    }
-
-    protected void AvoidAllObstacles()
-    {
-        foreach (Obstacle obstacle in manager.obstacles) 
-        {
-            AvoidObstacle(obstacle);
-        }
-    }*/
-
     protected Vector3 AvoidObstacle()
     {        
         Vector3 avoidForce = Vector3.zero;
@@ -225,6 +173,16 @@ public abstract class Agent : MonoBehaviour
         return avoidForce;
     }
 
+    //Seek Fire Code
+    public Vector3 SeekFire()
+    {
+        Vector3 fireForce = Vector3.zero;
+
+        fireForce += Seek(GameObject.FindGameObjectWithTag("Fire").transform.position);
+
+        return fireForce;
+    }
+
     private void OnDrawGizmosSelected()
     {
         //Draw lines to any obstacles to avoid
@@ -243,5 +201,29 @@ public abstract class Agent : MonoBehaviour
         Gizmos.matrix = transform.localToWorldMatrix;
         Gizmos.DrawWireCube(new Vector3(0, futureDist / 2f, 0), new Vector3(avoidRadius * 2f, futureDist, avoidRadius));
         Gizmos.matrix = Matrix4x4.identity;
+    }
+
+    bool Collision(GameObject vehicle, GameObject obstacle)
+    {
+        bool isColliding;
+
+        if (vehicle.GetComponent<SpriteRenderer>().bounds.min.x < obstacle.GetComponent<SpriteRenderer>().bounds.max.x &&
+            vehicle.GetComponent<SpriteRenderer>().bounds.max.x > obstacle.GetComponent<SpriteRenderer>().bounds.min.x &&
+            vehicle.GetComponent<SpriteRenderer>().bounds.min.y < obstacle.GetComponent<SpriteRenderer>().bounds.max.y &&
+            vehicle.GetComponent<SpriteRenderer>().bounds.max.y > obstacle.GetComponent<SpriteRenderer>().bounds.min.y)
+        {
+            isColliding = true;
+
+            if (obstacle.tag == "EnemyBullet" || obstacle.tag == "PlayerBullet" || obstacle.tag == "EnemyShip")
+            {
+                Destroy(obstacle);
+            }
+        }
+        else
+        {
+            isColliding = false;
+        }
+
+        return isColliding;
     }
 }

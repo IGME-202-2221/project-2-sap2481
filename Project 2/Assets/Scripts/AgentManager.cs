@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class AgentManager : MonoBehaviour
 {
@@ -11,9 +12,16 @@ public class AgentManager : MonoBehaviour
     Agent manPrefab;
 
     [SerializeField]
+    GameObject firePrefab;
+
+    [SerializeField]
     int agentSpawnCount;
 
-    List<Agent> agents = new List<Agent>();
+    Camera cam;
+
+    List<Agent> agents = new List<Agent>(); 
+
+    bool fireOnField = false;
 
     public List<Agent> Agents
     {
@@ -25,15 +33,16 @@ public class AgentManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        cam = Camera.main;
         for (int i = 0; i < agentSpawnCount; i++)
         {
             if (i % 2 == 0)
             {
-                agents.Add(Instantiate(manPrefab, new Vector3(-5, -3, 0), Quaternion.identity));               
+                agents.Add(Instantiate(manPrefab, new Vector3(-5, -3, 0), Quaternion.identity, cam.transform));               
             }
             else
             {
-                agents.Add(Instantiate(godPrefab, new Vector3(5, 3, 0), Quaternion.identity));
+                agents.Add(Instantiate(godPrefab, new Vector3(5, 3, 0), Quaternion.identity, cam.transform));
             }
             agents[i].Init(this);
         }
@@ -42,6 +51,21 @@ public class AgentManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        Vector3 mousePos = Mouse.current.position.ReadValue();
+        mousePos = Camera.main.ScreenToWorldPoint(mousePos);
+        mousePos.z = 0;
+
+        if (Mouse.current.leftButton.wasPressedThisFrame && fireOnField == false)
+        {
+            Instantiate(firePrefab, mousePos, Quaternion.identity, cam.transform);
+            fireOnField = true;
+            BroadcastMessage("FireOnField");
+        }
+    }
+
+    public void FireClaimed()
+    {
+        BroadcastMessage("FireClaimed");
+        fireOnField = false;
     }
 }

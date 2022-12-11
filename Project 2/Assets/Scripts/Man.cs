@@ -22,6 +22,8 @@ public class Man : Agent
     [SerializeField]
     float boundsWeight = 1f;
 
+    bool fireOnField = false;
+
     private void Awake()
     {
         worldSize.y = Camera.main.orthographicSize;
@@ -30,14 +32,67 @@ public class Man : Agent
 
     protected override void CalcSteeringForces()
     {
-        wanderForce = Wander(futureTime, wanderRadius);
-        totalSteeringForce += wanderForce;
-
         boundsForce = StayInBounds(worldSize, boundsTimeCheck);
         totalSteeringForce += boundsForce * boundsWeight;
 
         totalSteeringForce += Separation();
 
+        if (fireOnField == true)
+        {
+            totalSteeringForce += SeekFire();
+        }
+        else
+        {
+            wanderForce = Wander(futureTime, wanderRadius);
+            totalSteeringForce += wanderForce;
+        }
+
         totalSteeringForce += AvoidObstacle();
+
+        if (fireOnField == true)
+        {
+            if (Collision(gameObject, GameObject.FindGameObjectWithTag("Fire")))
+            {
+                Destroy(GameObject.FindGameObjectWithTag("Fire"));
+                fireOnField = false;
+                SendMessageUpwards("FireClaimed");
+                StartCoroutine(TurnRed());
+            }
+        }
+    }
+
+    public void FireOnField()
+    {
+        fireOnField = true;
+    }
+    public void FireClaimed()
+    {
+        fireOnField = false;
+    }
+
+    bool Collision(GameObject vehicle, GameObject obstacle)
+    {
+        bool isColliding;
+
+        if (vehicle.GetComponent<SpriteRenderer>().bounds.min.x < obstacle.GetComponent<SpriteRenderer>().bounds.max.x &&
+            vehicle.GetComponent<SpriteRenderer>().bounds.max.x > obstacle.GetComponent<SpriteRenderer>().bounds.min.x &&
+            vehicle.GetComponent<SpriteRenderer>().bounds.min.y < obstacle.GetComponent<SpriteRenderer>().bounds.max.y &&
+            vehicle.GetComponent<SpriteRenderer>().bounds.max.y > obstacle.GetComponent<SpriteRenderer>().bounds.min.y)
+        {
+            isColliding = true;
+        }
+        else
+        {
+            isColliding = false;
+        }
+
+        return isColliding;
+    }
+
+    IEnumerator TurnRed()
+    {
+        gameObject.GetComponent<SpriteRenderer>().material.color = Color.red;
+        yield return new WaitForSeconds(3f);
+        gameObject.GetComponent<SpriteRenderer>().material.color = Color.white;
     }
 }
