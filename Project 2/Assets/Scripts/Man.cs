@@ -23,6 +23,13 @@ public class Man : Agent
     float boundsWeight = 1f;
 
     bool fireOnField = false;
+    bool manHasFire = false;
+    bool hasFire = false;
+
+    public bool HasFire
+    {
+        get { return hasFire; }
+    }
 
     private void Awake()
     {
@@ -32,32 +39,44 @@ public class Man : Agent
 
     protected override void CalcSteeringForces()
     {
-        boundsForce = StayInBounds(worldSize, boundsTimeCheck);
+        boundsForce = StayInBounds(worldSize, boundsTimeCheck); //Stay In Bounds
         totalSteeringForce += boundsForce * boundsWeight;
+        totalSteeringForce += AvoidObstacle(); //Avoid Obstacles
 
-        totalSteeringForce += Separation();
-
-        if (fireOnField == true)
+        if (fireOnField == true) //Seek
         {
+            gameObject.GetComponent<SpriteRenderer>().material.color = Color.cyan;
+            totalSteeringForce += Separation(0.5f);
+
             totalSteeringForce += SeekFire();
-        }
-        else
-        {
-            wanderForce = Wander(futureTime, wanderRadius);
-            totalSteeringForce += wanderForce;
-        }
-
-        totalSteeringForce += AvoidObstacle();
-
-        if (fireOnField == true)
-        {
             if (Collision(gameObject, GameObject.FindGameObjectWithTag("Fire")))
             {
                 Destroy(GameObject.FindGameObjectWithTag("Fire"));
                 fireOnField = false;
-                SendMessageUpwards("FireClaimed");
+                hasFire = true;
+                SendMessageUpwards("FireGotByMan");
                 StartCoroutine(TurnRed());
             }
+        }
+        else if (hasFire == true) //Flee
+        {
+            Gods[] gods = FindObjectsOfType<Gods>();
+            for (int i = 0; i < gods.Length; i++)
+            {
+                totalSteeringForce += Flee(gods[i].physicsObject.Position);
+            }
+        }
+        else if (manHasFire == true) //Flock
+        {
+            gameObject.GetComponent<SpriteRenderer>().material.color = Color.green;
+            Flock();
+        }
+        else //Wander
+        {
+            gameObject.GetComponent<SpriteRenderer>().material.color = Color.white;
+            wanderForce = Wander(futureTime, wanderRadius);
+            totalSteeringForce += wanderForce;
+            totalSteeringForce += Separation();
         }
     }
 
@@ -67,6 +86,16 @@ public class Man : Agent
     }
     public void FireClaimed()
     {
+        fireOnField = false;
+    }
+    public void FireClaimedByMan()
+    {
+        manHasFire = true;
+        fireOnField = false;
+    }
+    public void ResetState()
+    {
+        manHasFire = false;
         fireOnField = false;
     }
 
@@ -92,7 +121,9 @@ public class Man : Agent
     IEnumerator TurnRed()
     {
         gameObject.GetComponent<SpriteRenderer>().material.color = Color.red;
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(10f);
         gameObject.GetComponent<SpriteRenderer>().material.color = Color.white;
+        hasFire = false;
+        SendMessageUpwards("FireGone");
     }
 }

@@ -8,9 +8,9 @@ public abstract class Agent : MonoBehaviour
 {
 
     [SerializeField]
-    private PhysicsObject physicsObject;
+    public PhysicsObject physicsObject;
 
-    AgentManager manager;
+    protected AgentManager manager;
     protected List<Vector3> tempObList = new List<Vector3>();
 
     [SerializeField]
@@ -22,12 +22,10 @@ public abstract class Agent : MonoBehaviour
     protected float avoidRadius = 1f;
 
     [SerializeField]
-    float maxForce = 2f;
+    float maxForce = 3f;
 
     [SerializeField]
     bool useVelocity = true;
-
-    List<Fire> fireList = new List<Fire>();
 
     protected Vector3 totalSteeringForce;
 
@@ -112,7 +110,7 @@ public abstract class Agent : MonoBehaviour
         }
     }
 
-    public Vector3 Separation()
+    public Vector3 Separation(float weight = 1f)
     {
         Vector3 separateForce = Vector3.zero;
         float sqrDist;
@@ -123,11 +121,29 @@ public abstract class Agent : MonoBehaviour
 
             if (sqrDist != 0)
             {
-                separateForce += Flee(other.physicsObject.Position) * (1f / sqrDist);
+                separateForce += Flee(other.physicsObject.Position) * (weight / sqrDist);
             }
         }
 
         return separateForce;
+    }
+    public void Flock()
+    {
+        float sqrDist;
+        Man[] men = FindObjectsOfType<Man>();
+        for (int i = 0; i < men.Length; i++)
+        {
+            if (men[i].HasFire == true)
+            {
+                totalSteeringForce += Seek(men[i].physicsObject.Position);
+            }
+
+            sqrDist = Vector3.SqrMagnitude(physicsObject.Position - men[i].physicsObject.Position);
+            if (sqrDist != 0)
+            {
+                totalSteeringForce += Flee(men[i].physicsObject.Position) * (0.4f / sqrDist);
+            }
+        }
     }
 
     protected Vector3 AvoidObstacle()

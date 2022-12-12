@@ -24,6 +24,7 @@ public class Gods : Agent
     float boundsWeight = 1f;
 
     bool fireOnField = false;
+    bool manHasFire = false;
 
     private void Awake()
     {
@@ -33,32 +34,76 @@ public class Gods : Agent
 
     protected override void CalcSteeringForces()
     {
-
-        boundsForce = StayInBounds(worldSize, boundsTimeCheck);
+        boundsForce = StayInBounds(worldSize, boundsTimeCheck); //Stay in Bounds
         totalSteeringForce += boundsForce * boundsWeight;
+        totalSteeringForce += AvoidObstacle(); //Avoid Obstacles
 
-        totalSteeringForce += Separation();
-
-        if (fireOnField == true)
+        if (fireOnField == true) //Seek
         {
+            gameObject.GetComponent<SpriteRenderer>().material.color = Color.cyan;
+            totalSteeringForce += Separation(0.5f);
+
             totalSteeringForce += SeekFire();
-        }
-        else
-        {
-            wanderForce = Wander(futureTime, wanderRadius);
-            totalSteeringForce += wanderForce;
-        }
-
-        totalSteeringForce += AvoidObstacle();
-
-        if (fireOnField == true)
-        {
             if (Collision(gameObject, GameObject.FindGameObjectWithTag("Fire")))
             {
                 Destroy(GameObject.FindGameObjectWithTag("Fire"));
-                fireOnField = false;
-                SendMessageUpwards("FireClaimed");
+                SendMessageUpwards("FireGotByGods");
             }
+        }
+        else if (manHasFire) //Pursue
+        {
+            float sqrDist;
+            gameObject.GetComponent<SpriteRenderer>().material.color = Color.yellow;
+
+            sqrDist = 0;
+            List<Man> menList = new List<Man>();
+            Man[] men = FindObjectsOfType<Man>();
+            for (int i = 0; i < men.Length; i++)
+            {
+                menList.Add(men[i]);
+            }
+
+            for (int i = 0; i < menList.Count; i++)
+            {
+                if (menList[i].HasFire == true)
+                {
+                    totalSteeringForce += Seek(menList[i].physicsObject.Position);
+                    if (Collision(gameObject, menList[i].gameObject))
+                    {
+                        manager.Agents.Remove(menList[i]);
+                        Destroy(menList[i].gameObject);
+                        SendMessageUpwards("FireGone");
+                    }
+                    menList.Remove(menList[i]);
+                }
+            }
+            for (int i = 0; i < menList.Count; i++)
+            {
+                sqrDist = Vector3.SqrMagnitude(physicsObject.Position - menList[i].physicsObject.Position);
+                if (sqrDist != 0)
+                {
+                    totalSteeringForce += Flee(menList[i].physicsObject.Position) * (1f / sqrDist);
+                }
+            }
+
+            sqrDist = 0f;
+            Gods[] gods = FindObjectsOfType<Gods>();
+            for (int i = 0; i < gods.Length; i++)
+            {
+                sqrDist = Vector3.SqrMagnitude(physicsObject.Position - gods[i].physicsObject.Position);
+                if (sqrDist != 0)
+                {
+                    totalSteeringForce += Flee(gods[i].physicsObject.Position) * (.45f / sqrDist);
+                }
+            }
+        }
+        else //Wander
+        {
+            gameObject.GetComponent<SpriteRenderer>().material.color = Color.white;
+
+            wanderForce = Wander(futureTime, wanderRadius);
+            totalSteeringForce += wanderForce;
+            totalSteeringForce += Separation();
         }
     }
     public void FireOnField()
@@ -67,6 +112,16 @@ public class Gods : Agent
     }
     public void FireClaimed()
     {
+        fireOnField = false;
+    }
+    public void FireClaimedByMan()
+    {
+        manHasFire = true;
+        fireOnField = false;
+    }
+    public void ResetState()
+    {
+        manHasFire = false;
         fireOnField = false;
     }
 

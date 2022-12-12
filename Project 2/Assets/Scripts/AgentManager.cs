@@ -38,11 +38,11 @@ public class AgentManager : MonoBehaviour
         {
             if (i % 2 == 0)
             {
-                agents.Add(Instantiate(manPrefab, new Vector3(-5, -3, 0), Quaternion.identity, cam.transform));               
+                agents.Add(Instantiate(manPrefab, new Vector3(-5.5f, -3.5f, 0), Quaternion.identity, cam.transform));               
             }
             else
             {
-                agents.Add(Instantiate(godPrefab, new Vector3(5, 3, 0), Quaternion.identity, cam.transform));
+                agents.Add(Instantiate(godPrefab, new Vector3(5.5f, 3.5f, 0), Quaternion.identity, cam.transform));
             }
             agents[i].Init(this);
         }
@@ -63,9 +63,18 @@ public class AgentManager : MonoBehaviour
         }
     }
 
-    public void FireClaimed()
+    public void FireGotByGods()
     {
         BroadcastMessage("FireClaimed");
+        fireOnField = false;
+    }
+    public void FireGotByMan()
+    {
+        BroadcastMessage("FireClaimedByMan");
+    }
+    public void FireGone()
+    {
+        BroadcastMessage("ResetState");
         fireOnField = false;
     }
 }
