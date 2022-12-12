@@ -11,46 +11,45 @@ _REPLACE OR REMOVE EVERYTING BETWEEN "\_"_
 
 ## Simulation Design
 
-In this simulation, two agents, Man and Gods, interact with each other in the world. Man is scared of the Gods, and the Gods wish to antagonize Man. Using the Mouse, the player can drop fire into the world, causing a reaction from both Man and Gods. The Gods will attempt to snuff out the flame, while Man will attempt to acquire it and bring it back to their villages. Once a Man has a flame, the others will attempt to protect him by flocking around him, while the Gods will attempt to stop the Man who has the flame from returning it to the Village. If it is returned or smothered, both agents revert to their original states.
+In this simulation, two agents, Man and Gods, interact with each other in the world. Man is scared of the Gods, and the Gods wish to antagonize Man. Using the Mouse, the player can drop fire into the world, causing a reaction from both Man and Gods. The Gods will attempt to snuff out the flame, while Man will attempt to acquire it for themselves. Once a Man has a flame, the others will attempt to protect him by flocking around him, while the Gods will attempt to stop the Man who has the flame. If the Gods stop the Man with the flame, the Man is destroyed. If a 10-second timer runs out, the fire is claimed for mankind. As a result of either, both Man and Gods return to their default states, and the player may drop another flame into the world.
 
 ### Controls
 
-- Move the Camera about the world (Arrow Keys)
 - Place Fire (Left Mouse Button)
 
 ## MAN
 
 Primitive mankind attempting to acquire and use fire from Prometheus.
 
-### Evade
+### Wander
 
-**Objective:** Avoid the Gods.
-
-#### Steering Behaviors
-
-- Evade - Nearest God
-- Obstacles - Will avoid rocks, trees, and other obstacles in the world
-- Seperation - Will Separate from all other instances of Man
-   
-#### State Transistions
-
-- This state will activate once all Fire in the world has been captured or smothered.
-   
-### Search
-
-**Objective:** Man will search for Fire placed by the player.
+**Objective:** Roam the world, avoiding the Gods
 
 #### Steering Behaviors
 
-- Seek - Nearest Flame
+- Wander
 - Obstacles - Will avoid rocks, trees, and other obstacles in the world
-- Seperation - Will Separate from all other instances of Man
+- Seperation - Will Separate from all other agents
    
 #### State Transistions
 
-- Agents will transition to this state when Fire is placed by the player in the world.
+- This state will activate once all Fire in the world has been captured or smothered. It is also the default state for Man.
+   
+### Seek
 
-### Protect
+**Objective:** Man will seek out the Fire placed by the player.
+
+#### Steering Behaviors
+
+- Seek - Player-placed Fire
+- Obstacles - Will avoid rocks, trees, and other obstacles in the world
+- Seperation - Will Separate from all other Agents
+   
+#### State Transistions
+
+- Man will transition to this state when Fire is placed by the player in the world.
+
+### Flock / Protect
 
 **Objective:** Man will protect another Man with a flame by flocking around him.
 
@@ -58,29 +57,29 @@ Primitive mankind attempting to acquire and use fire from Prometheus.
 
 - Flock: Nearest Man with Flame
 - Obstacles - Will avoid rocks, trees, and other obstacles in the world
-- Seperation - Will Separate from all other instances of Man
+- Seperation - Will Separate from all other agents
 
 #### State Transitions
 
-- Man will transition to this State when there is no more fire in the world, but a Man is carrying one
+- Man will transition to this State when there is no more fire in the world, but a Man is carrying a flame.
 
 ## GODS
 
 The Gods of Olympus attempting to stop the secret of Fire from reaching mankind.
 
-### FLOCK
+### Wander
 
-**Objective:** The Gods will flock together when no flames are in the world.
+**Objective:** The Gods will roam the world, avoiding Man.
 
 #### Steering Behaviors
 
-- Flock - Nearest God
+- Wander
 - Obstacles - Will avoid rocks, trees, and other obstacles in the world
-- Seperation - Will Separate from all other instances of Gods
+- Seperation - Will Separate from all other agents
    
 #### State Transistions
 
-- This State can be reached when no fires are in the world.
+- This State can be reached when no fires are in the world. It is also the default state for Gods.
    
 ### SEEK
 
@@ -90,21 +89,21 @@ The Gods of Olympus attempting to stop the secret of Fire from reaching mankind.
 
 - Seek - Nearest Flame
 - Obstacles - Will avoid rocks, trees, and other obstacles in the world
-- Seperation - Will Separate from all other instances of Gods
+- Seperation - Will Separate from all other agents.
 
 #### State Transistions
 
 - Gods reach this state when a flame is placed into the world by the Player
 
-### CHASE
+### PURSUE
 
-**Objective:** Gods will chase Man that carry flames.
+**Objective:** Gods will chase the Man that carries a flame.
 
 #### Steering Behaviors
 
 - Seek - Nearest Man with Flame
 - Obstacles - Will avoid rocks, trees, and other obstacles in the world
-- Seperation - Will Separate from all other instances of Gods
+- Seperation - Will Separate from all other agents.
 
 #### State Transitions
 
@@ -112,17 +111,20 @@ The Gods of Olympus attempting to stop the secret of Fire from reaching mankind.
 
 ## Sources
 
--   Background Soil: https://www.freepik.com/free-vector/brown-soil-texture-background_3478044.htm#query=soil&position=0&from_view=keyword
+- Background Soil: https://www.freepik.com/free-vector/brown-soil-texture-background_3478044.htm#query=soil&position=0&from_view=keyword
+- Fire: https://pngtree.com/freepng/orange-red-flame-flame-clipart_5566526.html
+- Caveman: https://www.shareicon.net/man-prehistoric-stone-age-troglodyte-primitive-people-avatar-769351
+- God: https://www.dreamstime.com/greek-god-zeus-ancient-greek-god-sculpture-philosopher-face-zeus-triton-neptune-logo-design-greek-god-zeus-line-art-logo-ancient-image214874175
 
 ## Make it Your Own
 
-- My game is different for me in the player interaction aspect, in the placement of the fire and the subsequent reaction from both sides in a different manner: Man trying to claim the fire, and Gods trying to snuff it out.
+- My game is different for me in the player interaction aspect, in the placement of the fire and the subsequent reaction from both sides in a different manner: Man trying to claim the fire, and Gods trying to snuff it out. I also utilize steering behaviors in unique ways, such as the use of Flocking to protect a Man who is carrying a flame.
 
 ## Known Issues
 
-_List any errors, lack of error checking, or specific information that I need to know to run your program_
+- Occasional issues with Bounds, in which an agent gets stuck on the edge of the screen
 
 ### Requirements not completed
 
-_If you did not complete a project requirement, notate that here_
+N/A
 
